@@ -12,6 +12,7 @@
 	<artifactId>outreach_event_service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>outreach_event_service</name>
+	<packaging>jar</packaging>
 	<description>Event service</description>
 
 	<properties>

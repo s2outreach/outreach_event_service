@@ -17,9 +17,12 @@ import com.amazonaws.services.dynamodbv2.document.Index;
 import com.amazonaws.services.dynamodbv2.document.ItemCollection;
 import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.document.UpdateItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
+import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import com.cts.outreach.event.entity.EventUserEntity;
@@ -90,12 +93,36 @@ public class EventUserRepo {
 		    String userid = useridAV.getS();
 		    AttributeValue usernameAV = item.getOrDefault("username", new AttributeValue());
 		    String username = usernameAV.getS();
-		    AttributeValue statusAV = item.getOrDefault("status", new AttributeValue());
-		    String status = statusAV.getS();
-		    EventUserEntity record = new EventUserEntity(id, eventid, eventname, userid, username, status);
+		    AttributeValue userstatusAV = item.getOrDefault("userstatus", new AttributeValue());
+		    String userstatus = userstatusAV.getS();
+		    EventUserEntity record = new EventUserEntity(id, eventid, userid, eventname, username, userstatus);
 		    allevents.add(record);
 		}
 		return allevents;
+	}
+	
+	public String updateStatus(String id, String eventname, String userstatus) {
+		
+		DynamoDB dynamoDB = new DynamoDB(amazonDynamoDB);
+		Table table = dynamoDB.getTable(TABLENAME);
+		UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey("id", id, "eventname", eventname)
+            .withUpdateExpression("set userstatus = :userstatus")
+            .withValueMap(new ValueMap()
+            		.withString(":userstatus", userstatus))
+            .withReturnValues(ReturnValue.UPDATED_NEW);
+		
+		try {
+			LOGGER.info("inside try1");
+            UpdateItemOutcome outcome =  table.updateItem(updateItemSpec);
+            LOGGER.info(outcome.getUpdateItemResult().toString());
+            LOGGER.info("inside try2");
+        }
+        catch (Exception e) {
+        	LOGGER.info(e.getMessage());
+        }
+        
+        return "success";
+		
 	}
 	
 	public List<EventUserEntity> formatItems(ItemCollection<QueryOutcome> items) {

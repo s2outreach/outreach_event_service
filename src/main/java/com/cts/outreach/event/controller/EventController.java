@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cts.outreach.event.entity.EventEntity;
 import com.cts.outreach.event.entity.EventUserEntity;
+import com.cts.outreach.event.model.UpdateReqModel;
 import com.cts.outreach.event.repo.EventRepo;
 import com.cts.outreach.event.repo.EventUserRepo;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -62,10 +63,17 @@ public class EventController {
 		return eventUserRepo.getEventsForUser(userid);
 	}
 	
-	@GetMapping("/getAllEventUsers")
-	public List<EventUserEntity> getAllEventUsers() {
+	@GetMapping("/getAllEventsUsers")
+	public List<EventUserEntity> getAllEventsUsers() {
 		LOGGER.info("All users for all events requested");
 		return eventUserRepo.getAllEventUsers();
+	}
+	
+	@PostMapping("/updateStatus")
+	public String updateStatus(@RequestBody UpdateReqModel updateRequest) {
+		LOGGER.info("Update requested " + updateRequest.getId() + " " + updateRequest.getEventname() + " " + updateRequest.getUserstatus());
+		eventUserRepo.updateStatus(updateRequest.getId(), updateRequest.getEventname(), updateRequest.getUserstatus());
+		return "success";
 	}
 
 }
