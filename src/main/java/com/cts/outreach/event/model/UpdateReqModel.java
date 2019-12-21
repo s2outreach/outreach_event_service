@@ -4,7 +4,9 @@ public class UpdateReqModel {
 	
 	private String id;
 	private String eventname;
+	private String username;
 	private String userstatus;
+	
 	public String getId() {
 		return id;
 	}
@@ -16,6 +18,12 @@ public class UpdateReqModel {
 	}
 	public void setEventname(String eventname) {
 		this.eventname = eventname;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	public String getUserstatus() {
 		return userstatus;
