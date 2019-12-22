@@ -51,9 +51,9 @@ public class EventRepo {
 		    String eventname = eventnameAV.getS();
 		    AttributeValue eventdateAV = item.getOrDefault("eventdate", new AttributeValue());
 		    String eventdate = eventdateAV.getS();
-		    AttributeValue reqdCountAV = item.getOrDefault("reqdCount", new AttributeValue());
-		    String reqdCount = reqdCountAV.getS();
-		    EventEntity record = new EventEntity(eventid, eventname, eventdate, reqdCount);
+		    AttributeValue locationAV = item.getOrDefault("location", new AttributeValue());
+		    String location = locationAV.getS();
+		    EventEntity record = new EventEntity(eventid, eventname, eventdate, location);
 		    allevents.add(record);
 		}
 		return allevents;

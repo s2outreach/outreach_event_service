@@ -96,7 +96,7 @@ public class EventController {
 		LOGGER.info("Update requested " + updateRequest.getId() + " " + updateRequest.getEventname() + " " + updateRequest.getUserstatus());
 		eventUserRepo.updateStatus(updateRequest.getId(), updateRequest.getEventname(), updateRequest.getUserstatus());
 		
-		LogModel log = new LogModel(updateRequest.getEventname(), updateRequest.getUsername(), "User registered");
+		LogModel log = new LogModel(updateRequest.getEventname(), updateRequest.getUsername(), "status updated to:" + updateRequest.getUserstatus());
 		ObjectMapper mapper = new ObjectMapper();
 		String obj = mapper.writeValueAsString(log);
 		this.producer.sendLog(obj);
