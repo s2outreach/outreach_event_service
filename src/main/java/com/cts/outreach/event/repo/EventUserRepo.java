@@ -93,9 +93,9 @@ public class EventUserRepo {
 		    String userid = useridAV.getS();
 		    AttributeValue usernameAV = item.getOrDefault("username", new AttributeValue());
 		    String username = usernameAV.getS();
-		    AttributeValue userstatusAV = item.getOrDefault("userstatus", new AttributeValue());
-		    String userstatus = userstatusAV.getS();
-		    EventUserEntity record = new EventUserEntity(id, eventid, userid, eventname, username, userstatus);
+		    AttributeValue emailAV = item.getOrDefault("email", new AttributeValue());
+		    String email = emailAV.getS();
+		    EventUserEntity record = new EventUserEntity(id, eventid, userid, eventname, username, email);
 		    allevents.add(record);
 		}
 		return allevents;
@@ -112,10 +112,8 @@ public class EventUserRepo {
             .withReturnValues(ReturnValue.UPDATED_NEW);
 		
 		try {
-			LOGGER.info("inside try1");
             UpdateItemOutcome outcome =  table.updateItem(updateItemSpec);
             LOGGER.info(outcome.getUpdateItemResult().toString());
-            LOGGER.info("inside try2");
         }
         catch (Exception e) {
         	LOGGER.info(e.getMessage());
