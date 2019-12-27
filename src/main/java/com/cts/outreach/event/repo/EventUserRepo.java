@@ -17,16 +17,13 @@ import com.amazonaws.services.dynamodbv2.document.Index;
 import com.amazonaws.services.dynamodbv2.document.ItemCollection;
 import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
-import com.amazonaws.services.dynamodbv2.document.UpdateItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
-import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import com.cts.outreach.event.entity.EventUserEntity;
-import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -49,21 +46,7 @@ public class EventUserRepo {
 		mapper.save(eventuser);
 	}
 	
-	public List<EventUserEntity> getUsersForEvent(String eventid) throws JsonMappingException, IOException {
-		dynamoDB = new DynamoDB(amazonDynamoDB);
-		Table table = dynamoDB.getTable(TABLENAME);
-		Index index = table.getIndex("eventid");
-		
-		QuerySpec spec = new QuerySpec()
-				.withKeyConditionExpression("eventid = :a")
-				.withValueMap(new ValueMap()
-						.withString(":a", eventid));
-		ItemCollection<QueryOutcome> items = index.query(spec);
-		
-		return formatItems(items);
-	}
-	
-	public List<EventUserEntity> getEventsForUser(String userid) throws JsonMappingException, IOException {
+	public List<EventUserEntity> getEventsForUser(String userid) throws Exception {
 		dynamoDB = new DynamoDB(amazonDynamoDB);
 		Table table = dynamoDB.getTable(TABLENAME);
 		Index index = table.getIndex("userid");
@@ -101,29 +84,7 @@ public class EventUserRepo {
 		return allevents;
 	}
 	
-	public String updateStatus(String id, String eventname, String userstatus) {
-		
-		DynamoDB dynamoDB = new DynamoDB(amazonDynamoDB);
-		Table table = dynamoDB.getTable(TABLENAME);
-		UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey("id", id, "eventname", eventname)
-            .withUpdateExpression("set userstatus = :userstatus")
-            .withValueMap(new ValueMap()
-            		.withString(":userstatus", userstatus))
-            .withReturnValues(ReturnValue.UPDATED_NEW);
-		
-		try {
-            UpdateItemOutcome outcome =  table.updateItem(updateItemSpec);
-            LOGGER.info(outcome.getUpdateItemResult().toString());
-        }
-        catch (Exception e) {
-        	LOGGER.info(e.getMessage());
-        }
-        
-        return "success";
-		
-	}
-	
-	public List<EventUserEntity> formatItems(ItemCollection<QueryOutcome> items) {
+	public List<EventUserEntity> formatItems(ItemCollection<QueryOutcome> items)  throws Exception {
 		ObjectMapper objmapper = new ObjectMapper();
 		List<EventUserEntity> allevents = new ArrayList<EventUserEntity>();
 		items.forEach(item -> {
@@ -132,12 +93,9 @@ public class EventUserRepo {
 				eventRecord = objmapper.readValue(item.toJSON(), EventUserEntity.class);
 				LOGGER.info(eventRecord.getEventid());
 				allevents.add(eventRecord);
-			} catch (JsonParseException e) {
-				LOGGER.debug(e.getMessage());
-			} catch (JsonMappingException e) {
-				LOGGER.debug(e.getMessage());
-			} catch (IOException e) {
-				LOGGER.debug(e.getMessage());
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		});
 		return allevents;

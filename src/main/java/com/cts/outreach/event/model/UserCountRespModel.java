@@ -7,9 +7,6 @@ public class UserCountRespModel {
 	public Long getCount() {
 		return count;
 	}
-	public void setCount(Long count) {
-		this.count = count;
-	}
 	public UserCountRespModel(Long count) {
 		super();
 		this.count = count;

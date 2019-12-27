@@ -19,32 +19,17 @@ public class EventEntity {
 	public String getEventid() {
 		return eventid;
 	}
-	public void setEventid(String eventid) {
-		this.eventid = eventid;
-	}
-	
 	@DynamoDBAttribute
 	public String getEventname() {
 		return eventname;
 	}
-	public void setEventname(String eventname) {
-		this.eventname = eventname;
-	}
-	
 	@DynamoDBRangeKey(attributeName="eventdate")
 	public String getEventdate() {
 		return eventdate;
 	}
-	public void setEventdate(String eventdate) {
-		this.eventdate = eventdate;
-	}
-	
 	@DynamoDBAttribute
 	public String getLocation() {
 		return location;
-	}
-	public void setLocation(String location) {
-		this.location = location;
 	}
 	public EventEntity(String eventid, String eventname, String eventdate, String location) {
 		super();

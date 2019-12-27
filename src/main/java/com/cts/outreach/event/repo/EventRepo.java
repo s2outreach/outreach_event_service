@@ -58,25 +58,5 @@ public class EventRepo {
 		}
 		return allevents;
 	}
-
-	
-	public List<EventEntity> formatItems(ItemCollection<QueryOutcome> items) {
-		ObjectMapper objmapper = new ObjectMapper();
-		List<EventEntity> allevents = new ArrayList<EventEntity>();
-		items.forEach(item -> {
-			EventEntity eventRecord;
-			try {
-				eventRecord = objmapper.readValue(item.toJSON(), EventEntity.class);
-				allevents.add(eventRecord);
-			} catch (JsonParseException e) {
-				LOGGER.debug(e.getMessage());
-			} catch (JsonMappingException e) {
-				LOGGER.debug(e.getMessage());
-			} catch (IOException e) {
-				LOGGER.debug(e.getMessage());
-			}
-		});
-		return allevents;
-	}
 }
 

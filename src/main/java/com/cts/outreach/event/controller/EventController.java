@@ -20,7 +20,6 @@ import com.cts.outreach.event.entity.EventUserEntity;
 import com.cts.outreach.event.model.EventModel;
 import com.cts.outreach.event.model.LogModel;
 import com.cts.outreach.event.model.RespModel;
-import com.cts.outreach.event.model.UpdateReqModel;
 import com.cts.outreach.event.model.UserCountRespModel;
 import com.cts.outreach.event.model.UserModel;
 import com.cts.outreach.event.repo.EventRepo;
@@ -71,7 +70,7 @@ public class EventController {
 	}
 	
 	@GetMapping("/getAllEvents")
-	public List<EventEntity> getAllRides() {
+	public List<EventEntity> getAllEvents() {
 		LOGGER.info("All Events requested");
 		return eventRepo.getAllevents();
 	}
@@ -160,28 +159,9 @@ public class EventController {
 	}
 	
 	@GetMapping("/getEventsForUser")
-	public List<EventUserEntity> getEventsForUser(@RequestParam String userid) throws JsonParseException, JsonMappingException, IOException {
+	public List<EventUserEntity> getEventsForUser(@RequestParam String userid) throws Exception {
 		LOGGER.info("All events requested for user " + userid);
 		return eventUserRepo.getEventsForUser(userid);
-	}
-	
-	@GetMapping("/getAllEventsUsers")
-	public List<EventUserEntity> getAllEventsUsers() {
-		LOGGER.info("All users for all events requested");
-		return eventUserRepo.getAllEventUsers();
-	}
-	
-	@PostMapping("/updateStatus")
-	public RespModel updateStatus(@RequestBody UpdateReqModel updateRequest) throws Exception {
-		LOGGER.info("Update requested " + updateRequest.getId() + " " + updateRequest.getEventname() + " " + updateRequest.getUserstatus());
-		eventUserRepo.updateStatus(updateRequest.getId(), updateRequest.getEventname(), updateRequest.getUserstatus());
-		
-		LogModel log = new LogModel(updateRequest.getEventname(), updateRequest.getUsername(), "status updated to:" + updateRequest.getUserstatus());
-		ObjectMapper mapper = new ObjectMapper();
-		String obj = mapper.writeValueAsString(log);
-		this.producer.sendLog(obj);
-		
-		return (new RespModel("success"));
 	}
 
 }
