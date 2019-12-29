@@ -73,7 +73,6 @@ public class OutreachEventServiceApplication {
 	            while ((line = br.readLine()) != null) {
 	            	String[] words = line.split(",");
 	                EventEntity event = new EventEntity(words[0], words[1], words[2], words[3]);
-	                System.out.println(words[0]);
 	                eventRepo.addevent(event);
 
 	        		int numVolunteers = 0;
