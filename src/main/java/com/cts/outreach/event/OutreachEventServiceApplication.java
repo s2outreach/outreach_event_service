@@ -61,21 +61,21 @@ public class OutreachEventServiceApplication {
 			File file = new File(
 					getClass().getClassLoader().getResource("event.csv").getFile()
 				);
-			
-			int average = 11;
-			int low = 15;
 
+			System.out.println("got file");
 	        try (FileReader reader = new FileReader(file);
 	             BufferedReader br = new BufferedReader(reader)) {
 
+	        	System.out.println("reading file");
 	            String line;
 	            int rowNum = 1;
 	            int id = 0;
 	            while ((line = br.readLine()) != null) {
 	            	String[] words = line.split(",");
 	                EventEntity event = new EventEntity(words[0], words[1], words[2], words[3]);
+	                System.out.println(words[0]);
 	                eventRepo.addevent(event);
-	        		
+
 	        		int numVolunteers = 0;
 	        		int i = 0;
 	        		if ( rowNum <= 24) {
@@ -83,20 +83,19 @@ public class OutreachEventServiceApplication {
 	        		} else if ( rowNum <= 60) {
 	        			numVolunteers = 15;
 	        		} else if ( rowNum <= 94) {
-	        			numVolunteers = 20;
+	        			numVolunteers = 25;
 	        		}
 	        		while(i < numVolunteers) {
 	        			EventUserEntity newEventUserEntity = 
-	        					new EventUserEntity(Integer.toString(id), Integer.toString(rowNum), Integer.toString(i), event.getEventname(), "volunteer" + Integer.toString(i), "volunteer" + Integer.toString(i) + "@testmail.com");
+	        					new EventUserEntity(Integer.toString(id), words[0], Integer.toString(i), event.getEventname(), "volunteer" + Integer.toString(i), "volunteer" + Integer.toString(i) + "@testmail.com");
 	        			eventUserRepo.addevent(newEventUserEntity);
 	        			i = i + 1;
-	        			id = id + 1;
-	        			
+
 	        		}
 	        		rowNum = rowNum + 1;
 	            }
 	        }
 		};
 	}
-	
+
 }

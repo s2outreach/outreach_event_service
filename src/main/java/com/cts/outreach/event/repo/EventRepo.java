@@ -32,7 +32,6 @@ public class EventRepo {
 	private static final String TABLENAME = "event";
 	
 	public void addevent(EventEntity event) {
-		event.setEventid(new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
 		mapper.save(event);
 	}
 	
