@@ -19,11 +19,8 @@ import org.springframework.context.annotation.Profile;
 
 import com.cts.outreach.event.entity.EventEntity;
 import com.cts.outreach.event.entity.EventUserEntity;
-import com.cts.outreach.event.model.LogModel;
 import com.cts.outreach.event.repo.EventRepo;
 import com.cts.outreach.event.repo.EventUserRepo;
-import com.cts.outreach.event.service.KafkaProducer;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.appinfo.AmazonInfo;
 
 @SpringBootApplication
@@ -37,13 +34,6 @@ public class OutreachEventServiceApplication {
 	
 	@Autowired
 	private EventUserRepo eventUserRepo;
-	
-	private final KafkaProducer producer;
-	
-	@Autowired
-	public OutreachEventServiceApplication(KafkaProducer producer) {
-		this.producer = producer;
-	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(OutreachEventServiceApplication.class, args);
@@ -71,12 +61,13 @@ public class OutreachEventServiceApplication {
 			File file = new File(
 					getClass().getClassLoader().getResource("event.csv").getFile()
 				);
+			
+			int average = 11;
+			int low = 15;
 
-			System.out.println("got file");
 	        try (FileReader reader = new FileReader(file);
 	             BufferedReader br = new BufferedReader(reader)) {
 
-	        	System.out.println("reading file");
 	            String line;
 	            int rowNum = 1;
 	            int id = 0;
@@ -84,12 +75,6 @@ public class OutreachEventServiceApplication {
 	            	String[] words = line.split(",");
 	                EventEntity event = new EventEntity(words[0], words[1], words[2], words[3]);
 	                eventRepo.addevent(event);
-	                System.out.println(words[0]);
-	                
-	                LogModel log = new LogModel(event.getEventname(), "", "Event added");
-	        		ObjectMapper mapper = new ObjectMapper();
-	        		String obj = mapper.writeValueAsString(log);
-	        		this.producer.sendLog(obj);
 	        		
 	        		int numVolunteers = 0;
 	        		int i = 0;
@@ -98,17 +83,15 @@ public class OutreachEventServiceApplication {
 	        		} else if ( rowNum <= 60) {
 	        			numVolunteers = 15;
 	        		} else if ( rowNum <= 94) {
-	        			numVolunteers = 25;
+	        			numVolunteers = 20;
 	        		}
 	        		while(i < numVolunteers) {
 	        			EventUserEntity newEventUserEntity = 
 	        					new EventUserEntity(Integer.toString(id), Integer.toString(rowNum), Integer.toString(i), event.getEventname(), "volunteer" + Integer.toString(i), "volunteer" + Integer.toString(i) + "@testmail.com");
 	        			eventUserRepo.addevent(newEventUserEntity);
 	        			i = i + 1;
-	        			log = new LogModel(newEventUserEntity.getEventname(), newEventUserEntity.getUsername(), "User registered");
-	        			 mapper = new ObjectMapper();
-	        			obj = mapper.writeValueAsString(log);
-	        			this.producer.sendLog(obj);
+	        			id = id + 1;
+	        			
 	        		}
 	        		rowNum = rowNum + 1;
 	            }

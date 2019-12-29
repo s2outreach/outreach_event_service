@@ -51,17 +51,17 @@ public class EventController {
 	
 	private Logger LOGGER = LoggerFactory.getLogger(EventUserRepo.class);
 	
-	@GetMapping("/getUserCount")
+	@GetMapping("/v1/getUserCount")
 	public UserCountRespModel getUserCount() {
 		return (new UserCountRespModel(userService.getUserCount() - 1));
 	}
 	
-	@PostMapping("/addEvent")
+	@PostMapping("/v1/addEvent")
 	public RespModel addEvent(@RequestBody EventEntity newEvent) throws Exception {
 		LOGGER.info("New event added " + newEvent.getEventname());
 		eventRepo.addevent(newEvent);
 		
-		LogModel log = new LogModel(newEvent.getEventname(), "", "Event added");
+		LogModel log = new LogModel("", newEvent.getEventname(), "", "Event added");
 		ObjectMapper mapper = new ObjectMapper();
 		String obj = mapper.writeValueAsString(log);
 		this.producer.sendLog(obj);
@@ -69,18 +69,18 @@ public class EventController {
 		return (new RespModel("success"));
 	}
 	
-	@GetMapping("/getAllEvents")
+	@GetMapping("/v1/getAllEvents")
 	public List<EventEntity> getAllEvents() {
 		LOGGER.info("All Events requested");
 		return eventRepo.getAllevents();
 	}
 	
-	@PostMapping("/addUserForEvent")
+	@PostMapping("/v1/addUserForEvent")
 	public RespModel addUserForEvent(@RequestBody EventUserEntity eventuser) throws Exception {
 		LOGGER.info("User " + eventuser.getUsername() + " added for the event " + eventuser.getEventname());
 		eventUserRepo.addevent(eventuser);
 		
-		LogModel log = new LogModel(eventuser.getEventname(), eventuser.getUsername(), "User registered");
+		LogModel log = new LogModel("", eventuser.getEventname(), eventuser.getUsername(), "User registered");
 		ObjectMapper mapper = new ObjectMapper();
 		String obj = mapper.writeValueAsString(log);
 		this.producer.sendLog(obj);
@@ -88,7 +88,7 @@ public class EventController {
 		return (new RespModel("success"));
 	}
 	
-	@GetMapping("/getEventReport")
+	@GetMapping("/v1/getEventReport")
 	public List<EventModel> getEventReport() throws JsonParseException, JsonMappingException, IOException {
 		LOGGER.info("Event report requested");
 		List<EventEntity> allEvents =  eventRepo.getAllevents();
@@ -125,7 +125,7 @@ public class EventController {
 		
 	}
 	
-	@GetMapping("/getUserReport")
+	@GetMapping("/v1/getUserReport")
 	public List<UserModel> getUserReport() throws JsonParseException, JsonMappingException, IOException {
 		LOGGER.info("User report requested");
 		List<EventUserEntity> allEvents =  eventUserRepo.getAllEventUsers();
@@ -158,7 +158,7 @@ public class EventController {
 		return resp;
 	}
 	
-	@GetMapping("/getEventsForUser")
+	@GetMapping("/v1/getEventsForUser")
 	public List<EventUserEntity> getEventsForUser(@RequestParam String userid) throws Exception {
 		LOGGER.info("All events requested for user " + userid);
 		return eventUserRepo.getEventsForUser(userid);

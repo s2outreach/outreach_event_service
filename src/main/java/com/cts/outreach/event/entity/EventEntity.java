@@ -19,6 +19,9 @@ public class EventEntity {
 	public String getEventid() {
 		return eventid;
 	}
+	public void setEventid(String eventid) {
+		this.eventid = eventid;
+	}
 	@DynamoDBAttribute
 	public String getEventname() {
 		return eventname;

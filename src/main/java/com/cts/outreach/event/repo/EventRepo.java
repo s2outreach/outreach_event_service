@@ -1,7 +1,8 @@
 package com.cts.outreach.event.repo;
 
-import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -12,15 +13,10 @@ import org.springframework.stereotype.Repository;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.document.ItemCollection;
-import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import com.cts.outreach.event.entity.EventEntity;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Repository
 public class EventRepo {
@@ -36,6 +32,7 @@ public class EventRepo {
 	private static final String TABLENAME = "event";
 	
 	public void addevent(EventEntity event) {
+		event.setEventid(new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
 		mapper.save(event);
 	}
 	

@@ -54,7 +54,7 @@ class OutreachEventServiceApplicationTests {
 	@Test
 	public void getUserCountTest() throws Exception {
 		Mockito.when(userService.getUserCount()).thenReturn(10L);
-		this.mockMvc.perform(get("/getUserCount"))
+		this.mockMvc.perform(get("/v1/getUserCount"))
 		.andExpect(status().isOk());
 	}
 	
@@ -63,7 +63,7 @@ class OutreachEventServiceApplicationTests {
 //		Mockito.when(eventRepo.addevent(ArgumentMatchers.any())).doNothing();
 		EventEntity newEvent = new EventEntity("1", "test event1", "test date1", "test location1");
 		
-		this.mockMvc.perform(post("/addEvent")
+		this.mockMvc.perform(post("/v1/addEvent")
 				.contentType(MediaType.APPLICATION_JSON)
 	            .content(asJsonString(newEvent)))
 		.andExpect(status().isOk());
@@ -77,7 +77,7 @@ class OutreachEventServiceApplicationTests {
 		allEvents.add(new EventEntity("3", "test event3", "test date3", "test location3"));
 		
 		Mockito.when(eventRepo.getAllevents()).thenReturn(allEvents);
-		this.mockMvc.perform(get("/getAllEvents"))
+		this.mockMvc.perform(get("/v1/getAllEvents"))
 		.andExpect(status().isOk());
 	}
 	
@@ -87,7 +87,7 @@ class OutreachEventServiceApplicationTests {
 		EventUserEntity newEventUserEntity = 
 				new EventUserEntity("1", "1", "1", "test event1", "test user1", "test mail1");
 		
-		this.mockMvc.perform(post("/addUserForEvent")
+		this.mockMvc.perform(post("/v1/addUserForEvent")
 				.contentType(MediaType.APPLICATION_JSON)
 	            .content(asJsonString(newEventUserEntity)))
 		.andExpect(status().isOk());
@@ -111,7 +111,7 @@ class OutreachEventServiceApplicationTests {
 		Mockito.when(eventRepo.getAllevents()).thenReturn(allEvents);
 		Mockito.when(eventUserRepo.getAllEventUsers()).thenReturn(allEventUsers);
 		
-		this.mockMvc.perform(get("/getEventReport"))
+		this.mockMvc.perform(get("/v1/getEventReport"))
 		.andExpect(status().isOk());
 	}
 	
@@ -133,7 +133,7 @@ class OutreachEventServiceApplicationTests {
 		Mockito.when(eventRepo.getAllevents()).thenReturn(allEvents);
 		Mockito.when(eventUserRepo.getAllEventUsers()).thenReturn(allEventUsers);
 		
-		this.mockMvc.perform(get("/getUserReport"))
+		this.mockMvc.perform(get("/v1/getUserReport"))
 		.andExpect(status().isOk());
 	}
 	
@@ -151,7 +151,7 @@ class OutreachEventServiceApplicationTests {
 		Mockito.when(eventUserRepo.getEventsForUser(ArgumentMatchers.anyString()))
 		.thenReturn(allEventUsers);
 		
-		this.mockMvc.perform(get("/getEventsForUser").param("userid", "1"))
+		this.mockMvc.perform(get("/v1/getEventsForUser").param("userid", "1"))
 		.andExpect(status().isOk());
 	}
 	
