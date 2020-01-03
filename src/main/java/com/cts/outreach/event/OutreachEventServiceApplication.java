@@ -2,7 +2,8 @@ package com.cts.outreach.event;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +46,7 @@ public class OutreachEventServiceApplication {
 	@Profile("aws")
 	public EurekaInstanceConfigBean eurekaInstanceConfig(InetUtils inetUtils) {
 	    EurekaInstanceConfigBean config = new EurekaInstanceConfigBean(inetUtils);
-	    AmazonInfo info = AmazonInfo.Builder.newBuilder().autoBuild("eureka");
+	    AmazonInfo info = AmazonInfo.Builder.newBuilder().autoBuild("event");
 	    config.setHostname(info.get(AmazonInfo.MetaDataKey.publicHostname));
 	    config.setIpAddress(info.get(AmazonInfo.MetaDataKey.publicIpv4));
 	    config.setNonSecurePort(2222);
@@ -63,14 +64,15 @@ public class OutreachEventServiceApplication {
 				);
 
 			System.out.println("got file");
-	        try (FileReader reader = new FileReader(file);
-	             BufferedReader br = new BufferedReader(reader)) {
+			InputStream in = getClass().getResourceAsStream("/event.csv");
+//	        try (FileReader reader = new FileReader(file);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(in)); 
 
 	        	System.out.println("reading file");
 	            String line;
 	            int rowNum = 1;
 	            int id = 0;
-	            while ((line = br.readLine()) != null) {
+	            while ((line = reader.readLine()) != null) {
 	            	String[] words = line.split(",");
 	                EventEntity event = new EventEntity(words[0], words[1], words[2], words[3]);
 	                eventRepo.addevent(event);
@@ -93,7 +95,6 @@ public class OutreachEventServiceApplication {
 	        		}
 	        		rowNum = rowNum + 1;
 	            }
-	        }
 		};
 	}
 
